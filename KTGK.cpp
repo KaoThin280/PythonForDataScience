@@ -278,6 +278,9 @@ int main(){
 note:
 	Moi hoi dong khoa chi duoc chu tri boi cac thanh vien thuoc khoa do;
 	Moi thanh vien chi co the duoc them vao hoi dong neu phu hop thoi gian;
+	Co the dung addMember() de them thanh vien vao hoi dong, neu thanh vien khong the tham gia hoi dong se khong them;
+	Cac du lieu test case se duoc dat trong comment, xoa ky tu comment de thuc hien cac test case mong muon;
+	Cac test case se duoc neu ro o cuoi sau ham main().
 */	
 //khoi tao danh sach cac khoa
 string danhSachKhoa [7] = {"Khoa CNTT", "Khoa Luat", "Khoa Moi Truong", "Khoa Nghe Thuat", "Khoa Ngoai Ngu", "Khoa QTKD", "Khoa TV-VP"};
@@ -303,24 +306,7 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	vector<Member> LANGUAGEmemberList;
 	vector<Member> BAmemberList;
 	vector<Member> LOmemberList;
-	//vector<vector<Member> > memberList;
-	
-//khoi tao ngau nhien thong tin thanh vien
-/*
-	aMember.name = memberFirstName[rand()%15];
-	aMember.academicRank = academicRank[rand()%2];
-	aMember.degree = degree[rand()%4];
-*/
-//khoi tao ngau nhien khoang thoi gian
-/*
-	aTime.day = days[rand()%5];
-	aTime.from = rand()% 16 + 8;
-	int from = aTime.from;
-	aTime.to = (rand()% 16 + from) -from;
-	
-	addTimeSlot(aMember, aTime);
-	//showMemberInfor(aMember);
-*/
+
 //test case:
 	vector<timeSlot> TDBtime;
 	vector<timeSlot> memberTime;
@@ -342,15 +328,15 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	aTime.day = 2; aTime.from = 8; aTime.to = 15; // thoi gian co san cua thanh vien 3 IT
 	memberTime.push_back(aTime);
 	
-//case 1,3, 4, 5
-
+//case 1, 3, 4, 5
+/*
 	aTime.day = 3; aTime.from = 8; aTime.to = 13; // thoi gian co san cua thanh vien 4 LAW
 	memberTime.push_back(aTime);
 	aTime.day = 3; aTime.from = 8; aTime.to = 14; // thoi gian co san cua thanh vien 5 LAW
 	memberTime.push_back(aTime);
 	aTime.day = 3; aTime.from = 8; aTime.to = 12; // thoi gian co san cua thanh vien 6 LAW
 	memberTime.push_back(aTime);
-
+*/
 
 //case2
 /*
@@ -388,7 +374,7 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 		ITmemberList.push_back(aMember);
 		aMember.availableSlots.pop_back();
 	}
-	
+
 //khoi tao 3 thanh vien khoa Luat
 	for (int i=0; i<3; i++){
 		aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
@@ -400,10 +386,10 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	}
 
 //case 4
-/*
+/*		
 		timeSlot extraTS;
 		extraTS.day = 5; extraTS.from = 8; extraTS.to = 11;
-		//khoi tao 3thanh vien cho ngay thu 2
+		//khoi tao 3 thanh vien cho ngay thu 2
 		vector<Member> extraMember;
 		for(int i =0; i<3; i++){
 			aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
@@ -413,8 +399,9 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 			aMember.availableSlots.pop_back();
 		}
 */		
-		
+
 //case 5
+/*
 		timeSlot extraTS;
 		extraTS.day = 5; extraTS.from = 8; extraTS.to = 11;
 		//khoi tao 3 thanh vien cho ngay thu 2
@@ -427,7 +414,7 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 			aMember.availableSlots.pop_back();
 		}
 		LAWmemberList.at(1).availableSlots.push_back(extraTS);
-		
+*/	
 
 //khoi tao 3 thanh vien khoa Moi truong
 	for (int i=0; i<3; i++){
@@ -455,7 +442,8 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	aTDB.departmentName = danhSachKhoa[1];
 	aTDB.members = LAWmemberList;
 	aTDB.scheduledTime.push_back(TDBtime.at(1));
-	schedule.push_back(aTDB); schedule.at(1).scheduledTime.push_back(extraTS); //case 4, 5
+	schedule.push_back(aTDB); 
+	//schedule.at(1).scheduledTime.push_back(extraTS); //case 4, 5
 	aTDB.scheduledTime.pop_back();
 //khoi tao hoi dong khoa Moi truong
 	aTDB.departmentName = danhSachKhoa[2];
@@ -465,10 +453,10 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	aTDB.scheduledTime.pop_back();
 	
 //hien thi:
-	//autoSchedule(schedule);
+	autoSchedule(schedule);
 	
 //Tim kiem:
-/*
+
 	int depNum; //ten khoa
 	string memName; //ten thanh vien
 	cout<<"Chon khoa:\n"; 
@@ -479,13 +467,13 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	cout<<"Nhap ten thanh vien: "; cin>>memName;
 	cout<<"Ket qua tim kiem:\n";
 	searchTDBofMember(schedule, danhSachKhoa[depNum], memName);
-*/
 
 return 0;
 }
 /*
 note: o cac test case se chi su dung it hon 7 hoi dong duoc de ra nham muc dich rut gon code nhung van co the tong quat duoc cac truong hop;
-	 viec them thanh vien vao 1 hoi dong co the thong qua ham addMember() de dam bao thanh vien do co the tham du hoi dong.
+	 viec them thanh vien vao 1 hoi dong co the thong qua ham addMember() de dam bao thanh vien do co the tham du hoi dong;
+	 co the thay doi du lieu o tung case de tao xung dot.
 cac test case:
 	1. perfect (cac hoi dong co day du thanh vien, khong co xung dot thoi gian nen chi can sap xep)
 	
