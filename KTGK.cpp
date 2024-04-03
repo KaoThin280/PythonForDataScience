@@ -49,11 +49,11 @@ bool isFitTime(timeSlot ts1, timeSlot ts2){
 	return ts1.from >= ts2.from and ts1.to <= ts2.to;
 }
 
-//kiem tra xung dot thoi gian
+//kiem tra xung dot thoi gian to chuc
 bool isTimeConflicted(timeSlot ts1, timeSlot ts2){
 	if (ts1.day != ts2.day) return false; //truong hop 1 (TH1): khac ngay
 	if (ts1.to > ts2.from) return true; //TH2: chua ket thuc hoi dong 1 ma da bat dau hoi dong 2
-	if (ts1.from < ts2.to) return true;	//TH3: chua 
+	//if (ts1.from < ts2.to) return true;	//TH3: chua 
 	if (ts1.from == ts2.from and ts1.to == ts2.to) return true;
 }
 
@@ -79,11 +79,12 @@ void showMemberInfor(Member mem){
 	cout<<"Ten: "<<mem.name<<endl;
 	cout<<"Hoc ham: "<<mem.academicRank<<endl;
 	cout<<"Hoc vi: "<<mem.degree<<endl;
-	cout<<"Thoi gian co san: ";
+	cout<<"Thoi gian co san:\n";
 	for (int i=0; i< mem.availableSlots.size();i++) {
+		//cout<<mem.availableSlots.size()<<endl;
     	cout<<"\t"; showTimeSlot(mem.availableSlots.at(i));
   	}
-  	cout<<"----------------------------------------------\n";
+  	cout<<"------------------------------------------------------------------------------------\n";
 }
 
 //cau truc 1 hoi dong: ten khoa, danh sach thanh vien, thoi gian du kien
@@ -122,8 +123,7 @@ bool removeMemberAtIndex(ThesisDefenseBoard & TDB, int i){
 
 //hien thi thong tin hoi dong
 void showTDB(ThesisDefenseBoard TDB){
-	cout<<"************************************************************";
-	cout<<"Khoa: "<< TDB.departmentName <<endl;
+	cout<<"Khoa: "<< TDB.departmentName<<"************************************************************"<<endl;
 	cout<<"Thoi gian du kien: " << endl;
 	for (int i = 0;i<TDB.scheduledTime.size(); i++){
 		cout<<"\t";
@@ -156,6 +156,15 @@ bool canBeHold(ThesisDefenseBoard TDB){
 	return true;
 }
 
+//kiem tra xung dot lich cua 1 hoi dong
+bool isSelfConflicted(ThesisDefenseBoard TDB){
+	for(int i=0; i< TDB.scheduledTime.size();i++){
+		for(int j=i+1; j< TDB.scheduledTime.size();j++){
+			if(isTimeConflicted(TDB.scheduledTime.at(i), TDB.scheduledTime.at(j))) return true;
+		}
+	}
+	return false;
+}
 //kiem tra trung lich giua 2 hoi dong
 bool isTDBconflicted(ThesisDefenseBoard TDB1, ThesisDefenseBoard TDB2) {
 	bool flag = false;
@@ -203,12 +212,17 @@ void sortSchedule(vector<ThesisDefenseBoard> & schedule){
 void autoSchedule(vector<ThesisDefenseBoard> & schedule) {
 	sortSchedule(schedule);
 	for(int i=0; i<schedule.size();i++){
+		//kiem tra xung dot thoi gian cua 1 hoi dong
+		if(isSelfConflicted(schedule.at(i))){
+			cout<<"Co 1 hoi dong xung dot thoi gian!";
+			return;
+		}
 		//kiem tra so luong thanh vien tung hoi dong
 		if(canBeHold(schedule.at(i)) == false){
 			cout<<"Co 1 hoi dong khong du thanh vien!\n";
 			return;
 		}
-		for(int j=0; j< schedule.size(); j++){
+		for(int j=i+1; j< schedule.size(); j++){
 			//kiem tra xung dot giua cac hoi dong
 			if(isTDBconflicted(schedule.at(i), schedule.at(j)) == true){
 				cout<<"Co xung dot giua 2 hoi dong!\n";
@@ -216,6 +230,7 @@ void autoSchedule(vector<ThesisDefenseBoard> & schedule) {
 			}
 		}
 	}
+	cout<<"Sap xep thanh cong.\n";
 	for(int i=0; i<schedule.size();i++){
 		showTDB(schedule.at(i));
 	}
@@ -236,7 +251,7 @@ int searchTDBbyName(vector<ThesisDefenseBoard> & schedule, string departmentName
 //tim 1 thanh vien co trong khoa
 bool findMemberInTDB(ThesisDefenseBoard TDB, string memberName){
 	for(int i =0; i< TDB.members.size(); i++){
-		if(memberName == TDB.members.at(i).name)  true;
+		if(TDB.members.at(i).name.find(memberName) != std::string::npos) return true;
 	}
 	return false;
 }
@@ -272,7 +287,7 @@ string danhSachKhoa [7] = {"Khoa CNTT", "Khoa Luat", "Khoa Moi Truong", "Khoa Ng
 	
 //khoi tao danh sach ten thanh vien
 string memberFirstName[15]  = {"Kao Thin","Luon Cong Minh","Quan WhaLe","Luong Quoc Va","No Xay","Thanh Huang","Phuong","Bao","Hoa","Sang","Huy","Tai","TM Man","Gud Guy","Bad Guy"};
-string memberLastName[4] = {"Nguyen", "Tran", "Phan", "Pham"};
+string memberLastName[6] = {" Nguyen", " Tran", " Phan", " Pham", " Luu", " Le"};
 
 //khoi tao danh sach hoc ham
 string academicRank[2] = {"Professor", "Associate Professor"};
@@ -281,21 +296,23 @@ string academicRank[2] = {"Professor", "Associate Professor"};
 string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 
 //khoi tao danh sach thanh vien
-	vector<Member> ITmembersList;
+	vector<Member> ITmemberList;
 	vector<Member> LAWmemberList;
-	vector<Member> ENVIRONMENTALmembersList;
-	vector<Member> ARTmembersList;
-	vector<Member> LANGUAGEmembersList;
-	vector<Member> BAmembersList;
-	vector<Member> LOmembersList;
+	vector<Member> ENVIRONMENTALmemberList;
+	vector<Member> ARTmemberList;
+	vector<Member> LANGUAGEmemberList;
+	vector<Member> BAmemberList;
+	vector<Member> LOmemberList;
 	//vector<vector<Member> > memberList;
 	
 //khoi tao ngau nhien thong tin thanh vien
+/*
 	aMember.name = memberFirstName[rand()%15];
 	aMember.academicRank = academicRank[rand()%2];
 	aMember.degree = degree[rand()%4];
-
+*/
 //khoi tao ngau nhien khoang thoi gian
+/*
 	aTime.day = days[rand()%5];
 	aTime.from = rand()% 16 + 8;
 	int from = aTime.from;
@@ -303,28 +320,164 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	
 	addTimeSlot(aMember, aTime);
 	//showMemberInfor(aMember);
-	
-//khoi tao danh sach lich du kien
-	vector<ThesisDefenseBoard> TDBlist;
+*/
+//test case:
+	vector<timeSlot> TDBtime;
+	vector<timeSlot> memberTime;
+	aTime.day = 2; aTime.from = 8; aTime.to = 11; //thoi gian hoi dong 1
+	TDBtime.push_back(aTime);
+//case 1, 3, 4, 5
+	aTime.day = 3; aTime.from = 9; aTime.to = 12; //thoi gian hoi dong 2
 
+//case2
+//	aTime.day = 2; aTime.from = 9; aTime.to = 12;
+	
+	TDBtime.push_back(aTime);
+	aTime.day = 4; aTime.from = 12; aTime.to = 15; //thoi gian hoi dong 3
+	TDBtime.push_back(aTime);
+	aTime.day = 2; aTime.from = 8; aTime.to = 13; // thoi gian co san cua thanh vien 1 IT
+	memberTime.push_back(aTime);
+	aTime.day = 2; aTime.from = 8; aTime.to = 11; // thoi gian co san cua thanh vien 2 IT
+	memberTime.push_back(aTime);
+	aTime.day = 2; aTime.from = 8; aTime.to = 15; // thoi gian co san cua thanh vien 3 IT
+	memberTime.push_back(aTime);
+	
+//case 1,3, 4, 5
+
+	aTime.day = 3; aTime.from = 8; aTime.to = 13; // thoi gian co san cua thanh vien 4 LAW
+	memberTime.push_back(aTime);
+	aTime.day = 3; aTime.from = 8; aTime.to = 14; // thoi gian co san cua thanh vien 5 LAW
+	memberTime.push_back(aTime);
+	aTime.day = 3; aTime.from = 8; aTime.to = 12; // thoi gian co san cua thanh vien 6 LAW
+	memberTime.push_back(aTime);
+
+
+//case2
+/*
+	aTime.day = 2; aTime.from = 8; aTime.to = 13; // thoi gian co san cua thanh vien 4 LAW
+	memberTime.push_back(aTime);
+	aTime.day = 2; aTime.from = 8; aTime.to = 14; // thoi gian co san cua thanh vien 5 LAW
+	memberTime.push_back(aTime);
+	aTime.day = 2; aTime.from = 8; aTime.to = 12; // thoi gian co san cua thanh vien 6 LAW
+	memberTime.push_back(aTime);
+*/
+
+//case 3:
+/*
+	aTime.day = 3; aTime.from = 8; aTime.to = 13; // thoi gian co san cua thanh vien 4 LAW
+	memberTime.push_back(aTime);
+	aTime.day = 3; aTime.from = 8; aTime.to = 14; // thoi gian co san cua thanh vien 5 LAW
+	memberTime.push_back(aTime);
+	aTime.day = 4; aTime.from = 8; aTime.to = 12; // thoi gian co san cua thanh vien 6 LAW
+	memberTime.push_back(aTime);
+*/
+
+	aTime.day = 4; aTime.from = 11; aTime.to = 16; // thoi gian co san cua thanh vien 7 ENV
+	memberTime.push_back(aTime);
+	aTime.day = 4; aTime.from = 10; aTime.to = 15; // thoi gian co san cua thanh vien 8 ENV
+	memberTime.push_back(aTime);
+	aTime.day = 4; aTime.from = 8; aTime.to = 17; // thoi gian co san cua thanh vien 9 ENV
+	memberTime.push_back(aTime);
+
+//khoi tao 3 thanh vien khoa CNTT
+	for (int i=0; i<3; i++){
+		aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
+		aMember.academicRank = academicRank[rand()% +2];
+		aMember.degree = degree[rand()% + 4];
+		aMember.availableSlots.push_back(memberTime.at(i));
+		ITmemberList.push_back(aMember);
+		aMember.availableSlots.pop_back();
+	}
+//khoi tao 3 thanh vien khoa Luat
+	for (int i=0; i<3; i++){
+		aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
+		aMember.academicRank = academicRank[rand()% +2];
+		aMember.degree = degree[rand()% + 4];
+		aMember.availableSlots.push_back(memberTime.at(i+3));
+		LAWmemberList.push_back(aMember);
+		aMember.availableSlots.pop_back();
+	}
+
+//case 4
+/*
+		timeSlot extraTS;
+		extraTS.day = 5; extraTS.from = 8; extraTS.to = 11;
+		//khoi tao 3thanh vien cho ngay thu 2
+		vector<Member> extraMember;
+		for(int i =0; i<3; i++){
+			aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
+			aMember.academicRank = academicRank[rand()% +2];
+			aMember.availableSlots.push_back(extraTS);
+			LAWmemberList.push_back(aMember);
+			aMember.availableSlots.pop_back();
+		}
+*/		
+		
+//case 5
+		timeSlot extraTS;
+		extraTS.day = 5; extraTS.from = 8; extraTS.to = 11;
+		//khoi tao 3 thanh vien cho ngay thu 2
+		vector<Member> extraMember;
+		for(int i =0; i<2; i++){
+			aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
+			aMember.academicRank = academicRank[rand()% +2];
+			aMember.availableSlots.push_back(extraTS);
+			LAWmemberList.push_back(aMember);
+			aMember.availableSlots.pop_back();
+		}
+		LAWmemberList.at(1).availableSlots.push_back(extraTS);
+		
+
+//khoi tao 3 thanh vien khoa Moi truong
+	for (int i=0; i<3; i++){
+		aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
+		aMember.academicRank = academicRank[rand()% +2];
+		aMember.degree = degree[rand()% + 4];
+		aMember.availableSlots.push_back(memberTime.at(i+6));
+		ENVIRONMENTALmemberList.push_back(aMember);
+		aMember.availableSlots.pop_back();
+	}
+	
+	
+	
+//khoi tao danh sach cac hoi dong
+	vector<ThesisDefenseBoard> schedule;
+	
+//khoi tao hoi dong khoa CNTT
+	aTDB.departmentName = danhSachKhoa[0];
+	aTDB.members = ITmemberList;
+	aTDB.scheduledTime.push_back(TDBtime.at(0));
+	schedule.push_back(aTDB);
+	aTDB.scheduledTime.pop_back();
+	
+//khoi tao hoi dong khoa Luat
+	aTDB.departmentName = danhSachKhoa[1];
+	aTDB.members = LAWmemberList;
+	aTDB.scheduledTime.push_back(TDBtime.at(1));
+	schedule.push_back(aTDB); schedule.at(1).scheduledTime.push_back(extraTS); //case 4, 5
+	aTDB.scheduledTime.pop_back();
+//khoi tao hoi dong khoa Moi truong
+	aTDB.departmentName = danhSachKhoa[2];
+	aTDB.members = ENVIRONMENTALmemberList;
+	aTDB.scheduledTime.push_back(TDBtime.at(2));
+	schedule.push_back(aTDB);
+	aTDB.scheduledTime.pop_back();
+	
+//hien thi:
+	//autoSchedule(schedule);
 return 0;
 }
 /*
-note: o cac test case se chi su dung it hon 7 hoi dong duoc de ra nham muc dich rut gon code nhung van co the tong quat duoc cac truong hop.
+note: o cac test case se chi su dung it hon 7 hoi dong duoc de ra nham muc dich rut gon code nhung van co the tong quat duoc cac truong hop;
+	 viec them thanh vien vao 1 hoi dong co the thong qua ham addMember() de dam bao thanh vien do co the tham du hoi dong.
 cac test case:
 	1. perfect (cac hoi dong co day du thanh vien, khong co xung dot thoi gian nen chi can sap xep)
 	
 	2. moi hoi dong dien ra trong 1 khoang thoi gian va co xung dot giua cac hoi dong
 	
-	3. moi hoi dong dien ra trong 1 khoang thoi gian va hoi dong khong co du thanh vien chu tri
+	3. moi hoi dong dien ra trong 1 khoang thoi gian va co hoi dong khong co du thanh vien chu tri
 	
-	4. moi hoi dong co the dien ra trong 2 khoang thoi gian va co xung dot
+	4. moi hoi dong co the dien ra trong 2 khoang thoi gian
 	
-	5. moi hoi dong co the dien ra trong 2 khoang thoi gian, co xung dot va khong du thanh vien chu tri
+	5. moi hoi dong co the dien ra trong 2 khoang thoi gian, moi thanh vien co the co 2 thoi gian co san
 */
-
-
-
-
-
-
