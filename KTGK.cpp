@@ -388,6 +388,7 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 		ITmemberList.push_back(aMember);
 		aMember.availableSlots.pop_back();
 	}
+	
 //khoi tao 3 thanh vien khoa Luat
 	for (int i=0; i<3; i++){
 		aMember.name = (memberFirstName[rand()% +15]) + (memberLastName[rand()% +6]);
@@ -465,6 +466,21 @@ string degree[4] = {"B.A", "engineer","Master", "Doctor"};
 	
 //hien thi:
 	//autoSchedule(schedule);
+	
+//Tim kiem:
+/*
+	int depNum; //ten khoa
+	string memName; //ten thanh vien
+	cout<<"Chon khoa:\n"; 
+	for(int i=0; i<7; i++){
+		cout<<i <<"." <<danhSachKhoa[i]<<"   ";
+	}
+	cin>>depNum;
+	cout<<"Nhap ten thanh vien: "; cin>>memName;
+	cout<<"Ket qua tim kiem:\n";
+	searchTDBofMember(schedule, danhSachKhoa[depNum], memName);
+*/
+
 return 0;
 }
 /*
